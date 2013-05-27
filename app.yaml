@@ -7,28 +7,31 @@ threadsafe: true
 handlers:
 
 - url: /stylesheets
-static_dir: stylesheets
+  static_dir: stylesheets
 
 - url: /images
-static_dir: images
+  static_dir: images
 
 - url: /scripts
-static_dir: scripts
+  static_dir: scripts
 
 # Twitter Bootstrap
 - url: /bootstrap
-static_dir: bootstrap
+  static_dir: bootstrap
 
-# Handler for front page
 - url: /
-script: front.app  # handled by front.py
+  script: front.app  # handled by main.py
+
+- url: /test
+  script: test.app  # handled by main.py
 
 - url: /.*
-script: main.app  # handled by main.py
+  script: main.app  # handled by main.py
+  login: required
 
 libraries:
 - name: jinja2
-version: latest
+  version: latest
 
 - name: webapp2
-version: latest
+  version: latest

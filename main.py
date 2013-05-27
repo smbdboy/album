@@ -123,9 +123,10 @@ class Display(webapp2.RequestHandler):
     self.response.out.write(template.render(template_values))
 
 
-app = webapp2.WSGIApplication([('/giftbook', MainPage),
-                               ('/wishlist', WishList),
-                               ('/addlist', AddList),
-                               ('/search', Search),
-                               ('/display', Display)],
+app = webapp2.WSGIApplication([('/', MainPage),
+                               ('/home', WishList),
+                               ('/create', WishList),
+                               ('/explore', AddList),
+                               ('/myaccount', Search),
+                               ('/support', Display)],
                               debug=True)
