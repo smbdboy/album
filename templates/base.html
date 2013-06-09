@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
     <head>
-        <title> Online Album</title>
+        <title>Online Album</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="../bootstrap/css/bootstrap.css" rel="stylesheet">
         <link href="../bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
@@ -17,11 +17,11 @@
                         <!-- nav_dic nav_entry -> entry active status -->
                         {% for nav_entry in nav_list %}
                             {% if nav_dic[nav_entry] == 'active' %}
-                                <li class="active"><a href="#">{{ nav_entry }}</a></li>
+                                <li class="active"><a href="{{ nav_url[nav_entry] }}">{{ nav_entry }}</a></li>
                             {% elif nav_dic[nav_entry] == 'normal' %}
-                                <li><a href="#">{{ nav_entry }}</a></li>
+                                <li><a href="{{ nav_url[nav_entry] }}">{{ nav_entry }}</a></li>
                             {% else %}
-                                <li><a href="#">{{ nav_entry }}</a></li>
+                                <li><a href="{{ nav_url[nav_entry] }}">{{ nav_entry }}</a></li>
                             {% endif %}
                         {% endfor %}
                     </ul>
@@ -30,7 +30,7 @@
             <!-- end of top nav bar -->
             
             <!-- Main function area -->
-            {% block body %}
+            {% block body scoped%}
             {% endblock %}
             <!-- End of Main function area -->
        </div>

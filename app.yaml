@@ -1,4 +1,4 @@
-application: album
+application: online-album
 version: 1
 runtime: python27
 api_version: 1
@@ -15,15 +15,17 @@ handlers:
 - url: /scripts
   static_dir: scripts
 
-# Twitter Bootstrap
 - url: /bootstrap
   static_dir: bootstrap
 
+- url: /upload
+  static_dir: upload
+
 - url: /
-  script: front.app  # handled by main.py
+  script: front.app  # handled by front.py
 
 - url: /test
-  script: test.app  # handled by main.py
+  script: test.app  # handled by test.py
 
 - url: /.*
   script: main.app  # handled by main.py
