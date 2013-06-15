@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 
-{% block body scoped%}
+{% block body%}
 <!-- this form can choose multiple file at once but it can only allow multiple choose in one folder --!>
 <form enctype='multipart/form-data' action='{{ upload_url }}' method='POST'>
-    <p>{{ upload_url }}</p>
-    <input id='images' type='file' name='images' multiple></input>
+    <label>Name of the Album: </label>
+    <input name='name_album'></label></br>
+    {% for file in files%}
+        <input id='images' type='file' name='images' multiple></input>
+    {% endfor %}
     <input type='submit'>
 </form>
 {% endblock %}

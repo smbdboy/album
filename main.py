@@ -3,8 +3,6 @@ import webapp2
 import jinja2
 import os
 import datetime
-
-
 from google.appengine.ext import db
 from google.appengine.ext import blobstore
 from google.appengine.ext.webapp import blobstore_handlers
@@ -40,12 +38,12 @@ class Home(webapp2.RequestHandler):
                     'Support':'support',
                     'Signout':users.create_logout_url("/")}
             template = jinja_environment.get_template('home.html')
-            self.response.out.write(template.render({'nav_dic' : nav_dic,'nav_list':nav_list, 'nav_url': nav_url}))
+            self.response.write(template.render({'nav_dic' : nav_dic,'nav_list':nav_list, 'nav_url': nav_url}))
         else:
             self.redirect(self.request.host_url)
 
 class Create(webapp2.RequestHandler):
-    def get(self):
+    def get(self, post = ''):
         user = users.get_current_user()
         if user:  # signed in already
             myAccount = 'My Account(<em>' + user.nickname() + '</em>)'
@@ -68,7 +66,16 @@ class Create(webapp2.RequestHandler):
                     'Support':'support',
                     'Signout':users.create_logout_url("/")}
             template = jinja_environment.get_template('create.html')
-            self.response.out.write(template.render({'nav_dic' : nav_dic,'nav_list':nav_list, 'nav_url': nav_url, 'upload_url': blobstore.create_upload_url('/upload')}))
+            var = {
+                    'info': post,
+                    'nav_dic' : nav_dic,
+                    'nav_list':nav_list,
+                    'nav_url': nav_url,
+                    # 'upload_url': blobstore.create_upload_url('/upload'),
+                    'upload_url': 'create',
+                    'files': ['file1'],
+                }
+            self.response.out.write(template.render(var))
         else:
             self.redirect(self.request.host_url)
 
