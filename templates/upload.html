@@ -1,35 +1,36 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<form action="{{ blobstore_upload }}" method="post" enctype="multipart/form-data" multiple>
+<form action="{{ blobstore_upload }}" method="post" enctype="multipart/form-data">
     <p id="upload_form" align="center"><br/>
     <label>Picture:  
-        <input name="picture" type="file" size="30" />
+        <input name="picture" type="file" accept="image/*"size="30" multiple/>
     </label>
     <input type="submit" value='Upload' />
     </p>
 </form>
 
-{% if pics %}
+{% if pic_urls %}
     <div class='row'>
-    {% for pic in pics %}
+    {% for pic_url in pic_urls %}
         <div class='span2'>
             <form action="del_pic" method="post">
                 <div class='row'>
                     <label>
-                        Uploaded photo: <img class='img-polaroid' src="{{ pic }}" width='120' height='150'></img>
+                        <div><p>Uploaded photo:</p></div> <img class='img-polaroid' src="{{ pic_url }}" width='120' height='150'></img><p>{{ pic_filenames[pic_url] }}</p>
                     </label>
                 </div>
                 <div class='row'>
                     <input type="submit" value="Delete" />
                 </div>
+                <input class='disappear'  name="del_pic" value="{{ pic_keys[pic_url] }}"/>
             </form>
         </div>
     {% endfor %}
     </div>
 {% endif %}
 
-{% if pics %}
+{% if pic_urls %}
     <div class='row'>
         <form action="gen" method="post">
             <label align="center">Name of Album: <input type="text" />

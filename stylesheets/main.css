@@ -1,3 +1,7 @@
+.disappear
+{
+    display: none;
+}
 /* For the top bar */
 .top-container {
     height: 200px;

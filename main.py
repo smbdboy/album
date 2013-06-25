@@ -39,8 +39,7 @@ class BlobStoreUpload(blobstore_handlers.BlobstoreUploadHandler):
     def post(self):
         user = users.get_current_user()
         if user:
-            upload_files = self.get_uploads('picture')  
-            blob_infos = upload_files #blob_key is stored in here
+            blob_infos = self.get_uploads('picture') #get_uploads returns a list of BlobInfo objects
             #user may upload more than one file by one form
             for blob_info in blob_infos:
                 pic = Picture(owner = user.user_id(), is_in_album = False, blob_key = blob_info.key())
@@ -61,23 +60,51 @@ class Upload(webapp2.RequestHandler): #this upload does not deal with upload for
             # select and display all the pic which does not belong to any album
             pics = Picture.all()
             pics.filter('owner =', user.user_id())
-            pics.filter('is_in_album =', False)
+            pics.filter('is_in_album =', False) # do not show the pics that already belong to some album
             pics = pics.run()
-            pic_urls = []
+            pic_urls = []  # urls are stored into an ordered list
+            pic_filenames = {} # pic_filenames is a dic pic_url : pic_name
+            pic_keys = {} # a dic storing the pic key for that pic
             debug = ''
             for pic in pics:
-                pic_urls.append(images.get_serving_url(pic.blob_key))
+                url = images.get_serving_url(pic.blob_key, size=1600, crop=True) # crop the image to have a formated output
+                pic_urls.append(url)
+                pic_filenames[url] = pic_name(pic.blob_key.filename)
+                pic_keys[url] = pic.key()
             template = jinja_environment.get_template('upload.html')
             var = {
                     'info': debug,
+                    'pic_filenames': pic_filenames,
+                    'pic_keys': pic_keys,
                     'nav_dic' : nav_dic,
                     'nav_list':nav_list,
                     'nav_url': nav_url,
                     'blobstore_upload': blobstore.create_upload_url('/blobstore_upload'),
                     'upload_url': 'create',
-                    'pics': pic_urls,
+                    'pic_urls': pic_urls,
                 }
             self.response.out.write(template.render(var))
+        else:
+            self.redirect(self.request.host_url)
+
+def del_pic (key): # delete the Picture by its unique key
+    pic = Picture.get(key)
+    pic.delete()
+    
+def del_blob (key): # delete the pic blob by a pic key
+    pic = Picture.get(key)
+    pic.blob_key.delete()
+
+class DeletePicture(webapp2.RequestHandler):
+    def post(self):
+        user = users.get_current_user()
+        if user: 
+            del_pickey = self.request.POST['del_pic']
+            del_blob(del_pickey) # first, delete the the blob
+            del_pic(del_pickey) # then, delete the picture
+
+            time.sleep(0.5)
+            self.redirect('/upload') #delet a pic and after delete go to upload page
         else:
             self.redirect(self.request.host_url)
 
@@ -124,9 +151,14 @@ class Picture(db.Model):
     is_in_album = db.BooleanProperty()
     blob_key = blobstore.BlobReferenceProperty()
 
+def pic_name(name): # function to restrict string to a limited length
+    if len(name) > 21 :
+        name = name[:18] + '...'
+    return name
 
 app = webapp2.WSGIApplication([ ('/home', Home),
                                 ('/upload', Upload),
                                 ('/blobstore_upload', BlobStoreUpload),
+                                ('/del_pic', DeletePicture),
                                 ('/album', Album)],
                                 debug=True)
