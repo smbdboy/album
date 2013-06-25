@@ -1,41 +1,42 @@
 {% extends 'base.html' %}
 
-<script language="javascript" type="text/javascript">
-<!--
-function startUpload(){
-      document.getElementById('f1_upload_process').style.visibility = 'visible';
-      document.getElementById('f1_upload_form').style.visibility = 'hidden';
-      return true;
-}
-
-function stopUpload(success){
-      var result = '';
-      if (success == 1){
-         result = '<span class="msg">The file was uploaded successfully!<\/span><br/><br/>';
-      }
-      else {
-         result = '<span class="emsg">There was an error during file upload!<\/span><br/><br/>';
-      }
-      document.getElementById('f1_upload_process').style.visibility = 'hidden';
-      document.getElementById('f1_upload_form').innerHTML = result + '<label>File: <input name="myfile" type="file" size="30" /><\/label><label><input type="submit" name="submitBtn" class="sbtn" value="Upload" /><\/label>';
-      document.getElementById('f1_upload_form').style.visibility = 'visible';      
-      return true;   
-}
-</script>   
-
 {% block body %}
-<form action="upload.php" method="post" enctype="multipart/form-data" target="upload_target" onsubmit="startUpload();" >
-    <p id="f1_upload_process">Loading...<br/><img src="loader.gif" /><br/></p>
-    <p id="f1_upload_form" align="center"><br/>
-    <label>File:  
-        <input name="myfile" type="file" size="30" />
+<form action="{{ blobstore_upload }}" method="post" enctype="multipart/form-data" multiple>
+    <p id="upload_form" align="center"><br/>
+    <label>Picture:  
+        <input name="picture" type="file" size="30" />
     </label>
-    <label>
-        <input type="submit" name="submitBtn" class="sbtn" value="Upload" />
-    </label>
+    <input type="submit" value='Upload' />
     </p>
-
-    <iframe id="upload_target" name="upload_target" src="#" style="width:0;height:0;border:0px solid #fff;"></iframe>
 </form>
+
+{% if pics %}
+    <div class='row'>
+    {% for pic in pics %}
+        <div class='span2'>
+            <form action="del_pic" method="post">
+                <div class='row'>
+                    <label>
+                        Uploaded photo: <img class='img-polaroid' src="{{ pic }}" width='120' height='150'></img>
+                    </label>
+                </div>
+                <div class='row'>
+                    <input type="submit" value="Delete" />
+                </div>
+            </form>
+        </div>
+    {% endfor %}
+    </div>
+{% endif %}
+
+{% if pics %}
+    <div class='row'>
+        <form action="gen" method="post">
+            <label align="center">Name of Album: <input type="text" />
+                <input type="submit" value="Create the Album" />
+            </label>
+        </form>
+    </div>
+{% endif %}
 {% endblock %}
 

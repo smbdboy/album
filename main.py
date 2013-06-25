@@ -1,4 +1,5 @@
 import urllib
+import time
 import webapp2
 import jinja2
 import os
@@ -7,6 +8,7 @@ from google.appengine.ext import db
 from google.appengine.ext import blobstore
 from google.appengine.ext.webapp import blobstore_handlers
 from google.appengine.api import users
+from google.appengine.api import images
 
 jinja_environment = jinja2.Environment(
         loader=jinja2.FileSystemLoader(os.path.dirname(__file__) + "/templates"))
@@ -18,149 +20,83 @@ class Home(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
         if user:  # signed in already
-            myAccount = 'My Account(<em>' + user.nickname() + '</em>)'
-            nav_dic = {'Home':'active',
-                    'Create': 'normal',
-                    'Explore':'normal',
-                    myAccount:'normal',
-                    'Support':'normal',
-                    'Signout':'normal'}
+            Signout = 'Signout(<em>' + user.nickname() + '</em>)'
+            nav_dic = {'Home':'active'}
             nav_list = ['Home',
-                    'Create',
-                    'Explore',
-                    'Support',
-                    myAccount,
-                    'Signout']
+                    'Upload',
+                    'Album',
+                    Signout]
             nav_url = {'Home':'home',
-                    'Create': 'create',
-                    'Explore':'explore',
-                    myAccount:'myaccount',
-                    'Support':'support',
-                    'Signout':users.create_logout_url("/")}
+                    'Upload': 'upload',
+                    'Album':'album',
+                    Signout:users.create_logout_url("/")}
             template = jinja_environment.get_template('home.html')
             self.response.write(template.render({'nav_dic' : nav_dic,'nav_list':nav_list, 'nav_url': nav_url}))
         else:
             self.redirect(self.request.host_url)
 
-class Create(webapp2.RequestHandler):
-    def get(self, post = ''):
+class BlobStoreUpload(blobstore_handlers.BlobstoreUploadHandler):
+    def post(self):
+        user = users.get_current_user()
+        if user:
+            upload_files = self.get_uploads('picture')  
+            blob_infos = upload_files #blob_key is stored in here
+            #user may upload more than one file by one form
+            for blob_info in blob_infos:
+                pic = Picture(owner = user.user_id(), is_in_album = False, blob_key = blob_info.key())
+                pic.put()
+            time.sleep(0.5) #so after redirect the upload process will has already been finished
+            self.redirect('/upload')
+        else:
+            self.redirect(self.request.host_url)
+
+class Upload(webapp2.RequestHandler): #this upload does not deal with upload form submit only upload
+    def get(self):
         user = users.get_current_user()
         if user:  # signed in already
-            myAccount = 'My Account(<em>' + user.nickname() + '</em>)'
-            nav_dic = {'Home':'normal',
-                    'Create': 'active',
-                    'Explore':'normal',
-                    myAccount:'normal',
-                    'Support':'normal',
-                    'Signout':'normal'}
-            nav_list = ['Home',
-                    'Create',
-                    'Explore',
-                    'Support',
-                    myAccount,
-                    'Signout']
-            nav_url = {'Home':'home',
-                    'Create': 'create',
-                    'Explore':'explore',
-                    myAccount:'myaccount',
-                    'Support':'support',
-                    'Signout':users.create_logout_url("/")}
-            template = jinja_environment.get_template('create.html')
+            Signout = 'Signout(<em>' + user.nickname() + '</em>)'
+            nav_dic = {'Upload':'active'}
+            nav_list = ['Home','Upload','Album',Signout]
+            nav_url = {'Home':'home','Upload': 'upload','Album':'album',Signout:users.create_logout_url("/")}
+            # select and display all the pic which does not belong to any album
+            pics = Picture.all()
+            pics.filter('owner =', user.user_id())
+            pics.filter('is_in_album =', False)
+            pics = pics.run()
+            pic_urls = []
+            debug = ''
+            for pic in pics:
+                pic_urls.append(images.get_serving_url(pic.blob_key))
+            template = jinja_environment.get_template('upload.html')
             var = {
-                    'info': post,
+                    'info': debug,
                     'nav_dic' : nav_dic,
                     'nav_list':nav_list,
                     'nav_url': nav_url,
-                    # 'upload_url': blobstore.create_upload_url('/upload'),
+                    'blobstore_upload': blobstore.create_upload_url('/blobstore_upload'),
                     'upload_url': 'create',
-                    'files': ['file1'],
+                    'pics': pic_urls,
                 }
             self.response.out.write(template.render(var))
         else:
             self.redirect(self.request.host_url)
 
-
-class Explore(webapp2.RequestHandler):
+class Album(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
-        if user:  # signed in already
-            myAccount = 'My Account(<em>' + user.nickname() + '</em>)'
-            nav_dic = {'Home':'normal',
-                    'Create': 'normal',
-                    'Explore':'active',
-                    myAccount:'normal',
-                    'Support':'normal',
-                    'Signout':'normal'}
+        if user: 
+            Signout = 'Signout(<em>' + user.nickname() + '</em>)'
+            nav_dic = {'Album':'active'}
             nav_list = ['Home',
-                    'Create',
-                    'Explore',
-                    'Support',
-                    myAccount,
-                    'Signout']
+                    'Upload',
+                    'Album',
+                    Signout]
             nav_url = {'Home':'home',
-                    'Create': 'create',
-                    'Explore':'explore',
-                    myAccount:'myaccount',
-                    'Support':'support',
-                    'Signout':users.create_logout_url("/")}
-            template = jinja_environment.get_template('explore.html')
-            self.response.out.write(template.render({'nav_dic' : nav_dic,'nav_list':nav_list, 'nav_url': nav_url}))
-        else:
-            self.redirect(self.request.host_url)
-
-class MyAccount(webapp2.RequestHandler):
-    def get(self):
-        user = users.get_current_user()
-        if user:  # signed in already
-            myAccount = 'My Account(<em>' + user.nickname() + '</em>)'
-            nav_dic = {'Home':'normal',
-                    'Create': 'normal',
-                    'Explore':'normal',
-                    myAccount:'active',
-                    'Support':'normal',
-                    'Signout':'normal'}
-            nav_list = ['Home',
-                    'Create',
-                    'Explore',
-                    'Support',
-                    myAccount,
-                    'Signout']
-            nav_url = {'Home':'home',
-                    'Create': 'create',
-                    'Explore':'explore',
-                    myAccount:'myaccount',
-                    'Support':'support',
-                    'Signout':users.create_logout_url("/")}
-            template = jinja_environment.get_template('myaccount.html')
-            self.response.out.write(template.render({'nav_dic' : nav_dic,'nav_list':nav_list, 'nav_url': nav_url}))
-        else:
-           self.redirect(self.request.host_url)
-
-class Support(webapp2.RequestHandler):
-    def get(self):
-        user = users.get_current_user()
-        if user:  # signed in already
-            myAccount = 'My Account(<em>' + user.nickname() + '</em>)'
-            nav_dic = {'Home':'normal',
-                    'Create': 'normal',
-                    'Explore':'normal',
-                    myAccount:'normal',
-                    'Support':'active',
-                    'Signout':'normal'}
-            nav_list = ['Home',
-                    'Create',
-                    'Explore',
-                    'Support',
-                    myAccount,
-                    'Signout']
-            nav_url = {'Home':'home',
-                    'Create': 'create',
-                    'Explore':'explore',
-                    myAccount:'myaccount',
-                    'Support':'support',
-                    'Signout':users.create_logout_url("/")}
-            template = jinja_environment.get_template('support.html')
-            self.response.out.write(template.render({'nav_dic' : nav_dic,'nav_list':nav_list, 'nav_url': nav_url}))
+                    'Upload': 'upload',
+                    'Album':'album',
+                    Signout:users.create_logout_url("/")}
+            template = jinja_environment.get_template('album.html')
+            self.response.write(template.render({'nav_dic' : nav_dic,'nav_list':nav_list, 'nav_url': nav_url}))
         else:
             self.redirect(self.request.host_url)
 
@@ -183,16 +119,14 @@ class Serve(blobstore_handlers.BlobstoreDownloadHandler):
 
 # Datastore definitions
 class Picture(db.Model):
-    """Models a person identified by email"""
-    owner = db.StringProperty()
+    owner = db.StringProperty() # identify the owner by user id
+    album = db.StringProperty()
+    is_in_album = db.BooleanProperty()
     blob_key = blobstore.BlobReferenceProperty()
 
 
 app = webapp2.WSGIApplication([ ('/home', Home),
-                                ('/create', Create),
-                                ('/explore', Explore),
-                                ('/myaccount', MyAccount),
-                                ('/support', Support),
-                                ('/serve/([^/]+)?', Serve),
-                                ('/upload', UploadHandler)],
+                                ('/upload', Upload),
+                                ('/blobstore_upload', BlobStoreUpload),
+                                ('/album', Album)],
                                 debug=True)
