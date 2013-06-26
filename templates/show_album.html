@@ -6,6 +6,8 @@
         <link href="../bootstrap/css/bootstrap.css" rel="stylesheet">
         <link href="../bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
         <link type="text/css" rel="stylesheet" href="../stylesheets/main.css">
+        <link type="text/javascript"  href="../script/script.js">
+            
     </head>
     <body>
         <div class="container"> 
@@ -25,13 +27,14 @@
             {% for pic_url in pic_urls %}
             <form>
                 <div class="row">
-                    <div class="span2" style="background-color = dark">
+                    <div class="span2" style="">
                         <p></p>
                     </div>
                     <div class="span8">
                         <img src="{{ pic_url }}" class="span8"></img>
+                        <p align='center'>{{ pic_names[pic_url] }}</p>
                     </div>
-                    <div class="span2" style="background-color = dark">
+                    <div class="span2" style="">
                         <p></p>
                     </div>
                 </div>

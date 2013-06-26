@@ -87,6 +87,29 @@ class Upload(webapp2.RequestHandler): #this upload does not deal with upload for
         else:
             self.redirect(self.request.host_url)
 
+class DeleteAlbum(webapp2.RequestHandler):
+    def post(self):
+        user = users.get_current_user()
+        if user: 
+            del_album_key = self.request.POST['album_id']
+            album = Album.get(del_album_key)
+            pics = Picture.all()
+            pics.filter('album =', album)
+            if 'album_id_with_pics' in self.request.POST:
+                for pic in pics:
+                    del_blob(pic.key()) #  delete the the blob
+                    pic.delete()
+            else:
+                for pic in pics:
+                    pic.is_in_album = False
+                    pic.album = None
+                    pic.put()
+            album.delete()
+            time.sleep(0.5)
+            self.redirect('/album') #delet a pic and after delete go to upload page
+        else:
+            self.redirect(self.request.host_url)
+
 class DeletePicture(webapp2.RequestHandler):
     def post(self):
         user = users.get_current_user()
@@ -114,6 +137,7 @@ class GenerateAlbum(webapp2.RequestHandler):
                 pic.is_in_album = True
                 pic.album = album # album is identified by the album id.
                 pic.put()
+            time.sleep(0.5)
             self.redirect('/album') # redirect to album list
         else:
             self.redirect(self.request.host_url)
@@ -160,14 +184,17 @@ class ShowAlbum(webapp2.RequestHandler):
             pics.filter('album =', album)
             pics = pics.run()
             pic_urls = []
+            pic_names = {}
             for pic in pics:
                 url = images.get_serving_url(pic.blob_key)
                 pic_urls.append(url)
+                pic_names[url] = pic.blob_key.filename
             debug = ''
             var = {
                     'info': debug,
                     'pic_urls': pic_urls,
                     'album': album,
+                    'pic_names': pic_names,
                 }
             template = jinja_environment.get_template('show_album.html')
             self.response.out.write(template.render(var))
@@ -205,5 +232,6 @@ app = webapp2.WSGIApplication([ ('/home', Home),
                                 ('/del_pic', DeletePicture),
                                 ('/gen', GenerateAlbum),
                                 ('/show_album', ShowAlbum),
+                                ('/del_album', DeleteAlbum),
                                 ('/album', AlbumList)],
                                 debug=True)

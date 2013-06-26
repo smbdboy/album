@@ -3,11 +3,11 @@
 {% block body %}
 
     <form action="{{ blobstore_upload }}" method="post" enctype="multipart/form-data">
-        <p id="upload_form" align="center"><br/>
-        <label>Picture:  
-            <input name="picture" type="file" accept="image/*"size="30" multiple/>
-        </label>
-        <input type="submit" value='Upload' />
+        <p id="upload_form" align="center" style='display:block'>
+            <label style='display:block'> 
+                <input name="picture" type="file" accept="image/*"size="30" multiple/>
+            </label>
+            <input type="submit" value='Upload' />
         </p>
     </form>
 
@@ -32,11 +32,13 @@
     {% endif %}
 
     {% if pic_urls %}
-    <div class='row'>
+    <div class='center-align'>
         <form action="gen" method="post">
-            <label align="center"><p display='inline'>Name of Album:</p> <input display='inline' name="album_name" type="text" />
-                <input display='inline' type="submit" value="Create the Album" />
-            </label>
+            <p align="center" style='display:block'>
+            <p style='display:inline'>Name of Album:</p> 
+            <input  name="album_name" type="text" />
+            <input  style='float:right' type="submit" value="Create the Album" />
+            </p>
         </form>
     </div>
     {% endif %}

@@ -6,6 +6,7 @@
         <link href="../bootstrap/css/bootstrap.css" rel="stylesheet">
         <link href="../bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
         <link type="text/css" rel="stylesheet" href="../stylesheets/main.css">
+        <link type="text/javascript"  href="../script/script.js">
     </head>
     <body>
         <div class="container"> 
@@ -21,7 +22,7 @@
             <div class="span12">
                 <div class="navbar navbar-inverse">
                     <div class="navbar-inner">
-                        <ul class="nav">
+                        <ul class="nav" style='display:block'>
                             <!-- nav_dic nav_entry -> entry active status -->
                             {% for nav_entry in nav_list %}
                             {% if nav_dic[nav_entry] == 'active' %}
@@ -33,6 +34,9 @@
                             {% endif %}
                             {% endfor %}
                         </ul>
+                        <ul class="nav" align='right' style='display:block; float:right; '>
+                            <li><a>Online Album</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -42,6 +46,15 @@
             {% block body scoped%}
             {% endblock %}
             <!-- End of Main function area -->
+
+            <!-- footer -->
+            <div class='footer-row'>
+                <hr />
+                <p align='center'>
+                Provided by Online Album
+                </p>
+            </div>
+            <!-- end of footer -->
         </div>
     </body>
 </html>

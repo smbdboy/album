@@ -2,20 +2,33 @@
 
 {% block body %}
 
-    {% if albums %}
-        {% for album in albums %}
-        <form action="show_album" method="POST">
-            <label>
-                <input class='disappear' name='album_id' value="{{ album.key() }}" />
-                <p display="inline">{{ album.name }}</p>
-                <input type='submit' value='View' /> 
-            </label>
+{% if albums %}
+{% for album in albums %}
+<div class='album-row'>
+    <p style="display:inline"> Album Name: <b>{{ album.name }}</b></p>
+    <form action="show_album" method="POST" style='display:inline'>
+        <input class='disappear' name='album_id' value="{{ album.key() }}" />
+        <input style="display:block; float:right" type='submit' value='  View ' /> 
+    </form>
+    <div class='row middle'>
+        <form action="del_album" method="POST" style='display:inline; float:right'>
+            <input class='disappear' name='album_id' value="{{ album.key() }}" />
+            <input class='disappear' name='album_id_without_pics' />
+            <input type='submit' value='Delete without delete pictures' />
         </form>
-        {% endfor %}
-    {% else %}
-    <div>
-        <p>There is no created album</p>
+        <form action="del_album" method="POST" style='display:inline; float:right'>
+            <input class='disappear' name='album_id' value="{{ album.key() }}" />
+            <input class='disappear' name='album_id_with_pics'  />
+            <input type='submit' class='del-with-pics' value='Delete and delete pictures' />
+        </form>
     </div>
-    {% endif %}
+    <hr />
+</div>
+{% endfor %}
+{% else %}
+<div>
+    <p>There is no created album</p>
+</div>
+{% endif %}
 
 {% endblock %}

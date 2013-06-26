@@ -2,6 +2,38 @@
 {
     display: none;
 }
+.album-row 
+{
+    margin: auto;
+    width: 50%;
+}
+.footer-row
+{
+    font-size: 10px;
+    font: Serif;
+    font-style: italic;
+    margin: auto;
+    width: 80%;
+    clear: both;
+}
+
+.center-align
+{
+    margin:auto;
+    width:50%;
+}
+.middle
+{
+    clear: both;
+    position: relative;
+    top:10px;
+}
+.del-with-pics
+{
+    position: relative;
+    right: 10px;
+}
+    
 /* For the top bar */
 .top-container {
     height: 200px;
