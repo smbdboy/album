@@ -1,18 +1,19 @@
 {% extends 'base.html' %}
 
 {% block body %}
-<form action="{{ blobstore_upload }}" method="post" enctype="multipart/form-data">
-    <p id="upload_form" align="center"><br/>
-    <label>Picture:  
-        <input name="picture" type="file" accept="image/*"size="30" multiple/>
-    </label>
-    <input type="submit" value='Upload' />
-    </p>
-</form>
 
-{% if pic_urls %}
+    <form action="{{ blobstore_upload }}" method="post" enctype="multipart/form-data">
+        <p id="upload_form" align="center"><br/>
+        <label>Picture:  
+            <input name="picture" type="file" accept="image/*"size="30" multiple/>
+        </label>
+        <input type="submit" value='Upload' />
+        </p>
+    </form>
+
+    {% if pic_urls %}
     <div class='row'>
-    {% for pic_url in pic_urls %}
+        {% for pic_url in pic_urls %}
         <div class='span2'>
             <form action="del_pic" method="post">
                 <div class='row'>
@@ -26,18 +27,19 @@
                 <input class='disappear'  name="del_pic" value="{{ pic_keys[pic_url] }}"/>
             </form>
         </div>
-    {% endfor %}
+        {% endfor %}
     </div>
-{% endif %}
+    {% endif %}
 
-{% if pic_urls %}
+    {% if pic_urls %}
     <div class='row'>
         <form action="gen" method="post">
-            <label align="center"><p display='inline'>Name of Album:</p> <input display='inline' type="text" />
+            <label align="center"><p display='inline'>Name of Album:</p> <input display='inline' name="album_name" type="text" />
                 <input display='inline' type="submit" value="Create the Album" />
             </label>
         </form>
     </div>
-{% endif %}
+    {% endif %}
+
 {% endblock %}
 

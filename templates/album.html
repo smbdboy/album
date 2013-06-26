@@ -1,4 +1,21 @@
 {% extends "base.html" %}
+
 {% block body %}
-<p> Welcome to Online Album Generating System</p>
+
+    {% if albums %}
+        {% for album in albums %}
+        <form action="show_album" method="POST">
+            <label>
+                <input class='disappear' name='album_id' value="{{ album.key() }}" />
+                <p display="inline">{{ album.name }}</p>
+                <input type='submit' value='View' /> 
+            </label>
+        </form>
+        {% endfor %}
+    {% else %}
+    <div>
+        <p>There is no created album</p>
+    </div>
+    {% endif %}
+
 {% endblock %}

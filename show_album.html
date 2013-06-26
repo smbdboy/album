@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Online Album</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="../bootstrap/css/bootstrap.css" rel="stylesheet">
+        <link href="../bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+        <link type="text/css" rel="stylesheet" href="../stylesheets/main.css">
+    </head>
+    <body>
+        <div class="container"> 
+
+            <!-- debug -->
+            <p>{{ info }}</p>
+            <!-- end of debug -->
+            
+            <!-- Logo part  --> 
+            <!-- End of Logo part --> 
+
+            <!-- content --> 
+            <form>
+                <div class="row">
+                    <div class="span1">
+                        <p>B</p>
+                    </div>
+                    <div class="span10">
+                        <img src="http://www.newyorker.com/online/blogs/photobooth/NASAEarth-01.jpg" width='1200' height='1500'></img>
+                    </div>
+                    <div class="span1">
+                        <p>F</p>
+                    </div>
+                </div>
+            </form>
+            <!-- end of content -->
+
+            <!-- Main function area -->
+            {% block body scoped%}
+            {% endblock %}
+            <!-- End of Main function area -->
+        </div>
+    </body>
+</html>

@@ -87,14 +87,6 @@ class Upload(webapp2.RequestHandler): #this upload does not deal with upload for
         else:
             self.redirect(self.request.host_url)
 
-def del_pic (key): # delete the Picture by its unique key
-    pic = Picture.get(key)
-    pic.delete()
-    
-def del_blob (key): # delete the pic blob by a pic key
-    pic = Picture.get(key)
-    pic.blob_key.delete()
-
 class DeletePicture(webapp2.RequestHandler):
     def post(self):
         user = users.get_current_user()
@@ -108,7 +100,26 @@ class DeletePicture(webapp2.RequestHandler):
         else:
             self.redirect(self.request.host_url)
 
-class Album(webapp2.RequestHandler):
+class GenerateAlbum(webapp2.RequestHandler):
+    def post(self):
+        user = users.get_current_user()
+        if user:
+            post = self.request.POST
+            album = Album(owner = user.user_id(), name = post['album_name'])
+            album.put() # put the album into database
+            pics = Picture.all()
+            pics.filter('owner =', user.user_id())
+            pics.filter('is_in_album =', False) # do not show the pics that already belong to some album
+            for pic in pics:
+                pic.is_in_album = True
+                pic.album = album # album is identified by the album id.
+                pic.put()
+            self.redirect('/album') # redirect to album list
+        else:
+            self.redirect(self.request.host_url)
+
+
+class AlbumList(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
         if user: 
@@ -122,43 +133,77 @@ class Album(webapp2.RequestHandler):
                     'Upload': 'upload',
                     'Album':'album',
                     Signout:users.create_logout_url("/")}
+            debug = ''
             template = jinja_environment.get_template('album.html')
-            self.response.write(template.render({'nav_dic' : nav_dic,'nav_list':nav_list, 'nav_url': nav_url}))
+            album = Album.all()
+            album.filter('owner =', user.user_id())
+            albums = album.run()
+            var = {
+                    'info': debug,
+                    'nav_dic' : nav_dic,
+                    'nav_list':nav_list,
+                    'nav_url': nav_url,
+                    'albums': albums,
+                }
+            self.response.write(template.render(var))
         else:
             self.redirect(self.request.host_url)
 
-class UploadHandler(blobstore_handlers.BlobstoreUploadHandler):
+class ShowAlbum(webapp2.RequestHandler):
     def post(self):
         user = users.get_current_user()
-        if user:
-            upload_files = self.get_uploads('images')# 'file' is file upload field in the form
-            user_picture = Picture(owner = user.user_id(), blob_key = upload_files[0].key())
-            db.put(user_picture)
-            self.redirect('/serve/%s' % upload_files[0].key())
+        if user: 
+            post = self.request.POST
+            album_id = post['album_id']
+            album = Album.get(album_id)
+            pics = Picture.all()
+            pics.filter('album =', album)
+            pics = pics.run()
+            pic_urls = []
+            for pic in pics:
+                url = images.get_serving_url(pic.blob_key)
+                pic_urls.append(url)
+            debug = ''
+            var = {
+                    'info': debug,
+                    'pic_urls': pic_urls,
+                    'album': album,
+                }
+            template = jinja_environment.get_template('show_album.html')
+            self.response.out.write(template.render(var))
         else:
             self.redirect(self.request.host_url)
 
-class Serve(blobstore_handlers.BlobstoreDownloadHandler):
-    def get(self, resource):
-        resource = str(urllib.unquote(resource))
-        blob_info = blobstore.BlobInfo.get(resource)
-        self.send_blob(blob_info)
-
 # Datastore definitions
+class Album(db.Model):
+    owner = db.StringProperty() # identify the owner by user id
+    name = db.StringProperty() # album name
+
 class Picture(db.Model):
     owner = db.StringProperty() # identify the owner by user id
-    album = db.StringProperty()
+    album = db.ReferenceProperty(Album) # refer to an album
     is_in_album = db.BooleanProperty()
     blob_key = blobstore.BlobReferenceProperty()
 
+# some functions
 def pic_name(name): # function to restrict string to a limited length
     if len(name) > 21 :
         name = name[:18] + '...'
     return name
 
+def del_pic (key): # delete the Picture by its unique key
+    pic = Picture.get(key)
+    pic.delete()
+    
+def del_blob (key): # delete the pic blob by a pic key
+    pic = Picture.get(key)
+    pic.blob_key.delete()
+
 app = webapp2.WSGIApplication([ ('/home', Home),
                                 ('/upload', Upload),
                                 ('/blobstore_upload', BlobStoreUpload),
                                 ('/del_pic', DeletePicture),
-                                ('/album', Album)],
+                                ('/gen', GenerateAlbum),
+                                ('/show_album', ShowAlbum),
+                                ('/album', AlbumList)],
                                 debug=True)

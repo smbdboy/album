@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Online Album</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="../bootstrap/css/bootstrap.css" rel="stylesheet">
+        <link href="../bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+        <link type="text/css" rel="stylesheet" href="../stylesheets/main.css">
+    </head>
+    <body>
+        <div class="container"> 
+
+            <!-- debug -->
+            {% if info %}
+            <p>{{ info }}</p>
+            {% endif %}
+            <!-- end of debug -->
+            
+            <!-- Logo part  --> 
+            <!-- End of Logo part --> 
+
+            <!-- content --> 
+            <p align='center'>Album: {{ album.name }}</p>
+            {% if pic_urls %}
+            {% for pic_url in pic_urls %}
+            <form>
+                <div class="row">
+                    <div class="span2" style="background-color = dark">
+                        <p></p>
+                    </div>
+                    <div class="span8">
+                        <img src="{{ pic_url }}" class="span8"></img>
+                    </div>
+                    <div class="span2" style="background-color = dark">
+                        <p></p>
+                    </div>
+                </div>
+            </form>
+            {% endfor %}
+            {% endif %}
+            <!-- end of content -->
+        </div>
+    </body>
+</html>
