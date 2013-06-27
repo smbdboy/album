@@ -24,6 +24,9 @@ handlers:
 - url: /
   script: front.app  # handled by front.py
 
+- url: /raspberry
+  script: main.app 
+
 - url: /test
   script: test.app  # handled by test.py
 

@@ -42,7 +42,7 @@ class BlobStoreUpload(blobstore_handlers.BlobstoreUploadHandler):
             blob_infos = self.get_uploads('picture') #get_uploads returns a list of BlobInfo objects
             #user may upload more than one file by one form
             for blob_info in blob_infos:
-                pic = Picture(owner = user.user_id(), is_in_album = False, blob_key = blob_info.key())
+                pic = Picture(owner = user.user_id(), is_in_album = False, blob_key = blob_info.key(), date=datetime.datetime.now())
                 pic.put()
             time.sleep(0.5) #so after redirect the upload process will has already been finished
             self.redirect('/upload')
@@ -61,6 +61,7 @@ class Upload(webapp2.RequestHandler): #this upload does not deal with upload for
             pics = Picture.all()
             pics.filter('owner =', user.user_id())
             pics.filter('is_in_album =', False) # do not show the pics that already belong to some album
+            pics.order('date') # put the newest uploaded photo at the end
             pics = pics.run()
             pic_urls = []  # urls are stored into an ordered list
             pic_filenames = {} # pic_filenames is a dic pic_url : pic_name
@@ -128,7 +129,7 @@ class GenerateAlbum(webapp2.RequestHandler):
         user = users.get_current_user()
         if user:
             post = self.request.POST
-            album = Album(owner = user.user_id(), name = post['album_name'])
+            album = Album(owner = user.user_id(), name = post['album_name'], date = datetime.datetime.now())
             album.put() # put the album into database
             pics = Picture.all()
             pics.filter('owner =', user.user_id())
@@ -161,6 +162,7 @@ class AlbumList(webapp2.RequestHandler):
             template = jinja_environment.get_template('album.html')
             album = Album.all()
             album.filter('owner =', user.user_id())
+            album.order('-date')
             albums = album.run()
             var = {
                     'info': debug,
@@ -182,6 +184,7 @@ class ShowAlbum(webapp2.RequestHandler):
             album = Album.get(album_id)
             pics = Picture.all()
             pics.filter('album =', album)
+            pics.order('-date')
             pics = pics.run()
             pic_urls = []
             pic_names = {}
@@ -205,11 +208,13 @@ class ShowAlbum(webapp2.RequestHandler):
 class Album(db.Model):
     owner = db.StringProperty() # identify the owner by user id
     name = db.StringProperty() # album name
+    date = db.DateTimeProperty() # date of creation
 
 class Picture(db.Model):
     owner = db.StringProperty() # identify the owner by user id
     album = db.ReferenceProperty(Album) # refer to an album
     is_in_album = db.BooleanProperty()
+    date = db.DateTimeProperty() # date of creation
     blob_key = blobstore.BlobReferenceProperty()
 
 # some functions
@@ -226,6 +231,27 @@ def del_blob (key): # delete the pic blob by a pic key
     pic = Picture.get(key)
     pic.blob_key.delete()
 
+class RaspBerry(webapp2.RequestHandler):
+    def post(self):
+        post = self.request.POST
+        message = 'posted messages: --'+post['ip']
+        if post['ip']:
+            ip = IP(date=datetime.datetime.now(), ip=post['ip'])
+            ip.put()
+        self.response.write(message)
+    def get(self):
+        ips = IP.all()
+        ips.order('-date') # sort the data by date so the latest update is on top of the page
+        ips = ips.run()
+        message = 'goted ip from raspberry<br/>'
+        for ip in ips:
+            message += ip.ip + '@' + str(ip.date) + '<br/>'
+        self.response.write(message)
+
+class IP(db.Model):
+    date = db.DateTimeProperty() 
+    ip = db.StringProperty() 
+   
 app = webapp2.WSGIApplication([ ('/home', Home),
                                 ('/upload', Upload),
                                 ('/blobstore_upload', BlobStoreUpload),
@@ -233,5 +259,6 @@ app = webapp2.WSGIApplication([ ('/home', Home),
                                 ('/gen', GenerateAlbum),
                                 ('/show_album', ShowAlbum),
                                 ('/del_album', DeleteAlbum),
+                                ('/raspberry', RaspBerry),
                                 ('/album', AlbumList)],
                                 debug=True)
