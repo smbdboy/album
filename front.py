@@ -8,7 +8,7 @@ jinja_environment = jinja2.Environment(
 class MainPage(webapp2.RequestHandler):
   """ Handler for the front page."""
   def get(self):
-      template = jinja_environment.get_template('front.html')
+      template = jinja_environment.get_template('home.html')
       nav_dic = {'Home': 'active'}
       nav_list = ['Home','Upload','Album']
       nav_url = {'Home':'home', 'Upload': 'upload', 'Album': 'album'}
