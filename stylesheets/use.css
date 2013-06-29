@@ -1,0 +1,938 @@
+html  { image-rendering: optimizeQuality; } 
+body
+{
+    padding:0px;
+    margin:4px 0px 0px 0px;
+    font-family:'HelveticaRegular',Helvetica,Arial;
+    overflow-y: scroll;
+}
+body[lng=ja]
+{
+    font-family:'ＭＳ Ｐゴシック', 'Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro W3', Osaka;
+}
+/* top navigation */
+body .topNav
+{
+    width:100%;
+    border:none;
+    font-size:18px;
+    font-weight:normal;
+    color:#3d3d3d;
+}
+body[lng=ru] .topNav{font-size:17px;} 
+body[lng=fr] .topNav{font-size:17px;} 
+body[lng=de] .topNav{font-size:17px;} 
+.siteNave
+{
+    border-width:0px;
+    list-style-type:none;
+    margin: 0px;
+    padding: 0px;
+    height: 42px;
+}
+.siteNave a
+{
+    color:#3d3d3d;
+    text-decoration:none;
+    display: block;
+}
+.siteNave a:hover
+{
+    color:#000000;
+}
+body .siteNave li
+{
+    padding-right:22px;
+    float: left;
+    padding-top:21px;
+}
+
+body[lng=ru] .siteNave li{padding-right:14px;} 
+body[lng=fr] .siteNave li{padding-right:17px;} 
+body[lng=it] .siteNave li{padding-right:20px;}       
+body[lng=de] .siteNave li{padding-right:18px;}  
+body[lng=pt] .siteNave li{padding-right:20px;}  
+body .siteNave li:last-child
+{
+    padding-right:0px;
+}     
+.siteNave .logoTd
+{
+    height:42px;
+    padding-top:0px;
+}
+.siteNave .logoTd img
+{
+    border: none;
+}
+.langsDropDownTd
+{
+    width:136px;
+}
+.langsDropDown_0
+{
+    display:block;
+    width:136px;
+    height:25px;
+    text-align:left;
+    font-size:16px;
+}
+.langsDropDown_1
+{
+    display:block;
+    position:relative;
+    z-index:4000;
+    left:0px;
+    top:0px;
+    height:20px;
+}
+.langsDropDown
+{
+    list-style-type:none;
+    color:#3D3D3D;
+    padding:5px;
+    margin:0px;
+    height:18px;
+    width:120px;
+    overflow:hidden;
+    display:block;
+    position:absolute;
+    text-align:left;
+    z-index:4001;
+    background-color:White;
+    background-image:url(../images-v-01/lngBgOut.png);
+    background-repeat:no-repeat;
+    -webkit-transition:height 0.3s ease-out;
+    -moz-transition:height 0.3s ease-out;
+    -o-transition:height 0.3s ease-out;
+    border-radius:5px;
+    border:solid 1px #ffffff;
+}
+.langsDropDown:hover
+{
+    border:solid 1px #cfcfcf;
+    box-shadow:#3f3f3f 2px 2px 7px 0px;
+    height:225px;
+}
+.langsDropDown li[selectedLang=false]
+{
+    color:#1F1F1F;
+    display:block;
+    padding:3px;
+    border-radius:3px;
+    cursor:pointer;
+    height:18px;
+}
+.langsDropDown li a
+{
+    color:#1F1F1F;
+    text-decoration: none;
+    display:block;
+}
+.langsDropDown li[selectedLang=true]
+{
+    color:#3D3D3D;
+    display:block;
+    text-decoration:none;
+    padding:0px 0px 0px 24px;
+    border-bottom: solid 1px grey;
+    height:26px;
+    margin-bottom:6px;
+    cursor:pointer;
+}
+.langsDropDown li[selectedLang=true] a
+{
+    color:#3D3D3D;
+}
+.langsDropDown li[selectedLang=false]:hover
+{
+    background-color:#0099ff;
+    color:#ffffff;
+}
+.langsDropDown li[selectedLang=false]:hover a
+{
+    color:#ffffff;
+}
+.sign_out_div .logOutTd
+{
+    height:18px;
+    text-align:right;
+}
+.sign_out_div a
+{
+    font-size:15px;
+    color:#0092cc;
+    text-decoration:none;
+}
+.sign_out_div a:hover
+{
+    color:#017cb1;
+}
+.sign_out_div .hello
+{
+    font-size:15px;
+    line-height:19px;
+    overflow:hidden;
+    max-width:620px;
+    white-space:nowrap;
+    position:absolute;
+    right:0px;
+}
+.sign_up_in_div .logInTd
+{
+    height:22px;
+}
+body .sign_up_in_div a
+{
+    color:#3D3D3D;
+    text-decoration:none;
+}
+.sign_up_in_div a:hover
+{
+    color:black;
+}
+/* end top navigation */
+
+.homeSliderContainer
+{
+     -webkit-backface-visibility:hidden;
+}
+.homeSliderContainer div, .homeSliderContainer span, .homeSliderContainer a, .homeSliderContainer img
+{
+    -webkit-backface-visibility:hidden;
+}
+.pepoleContainer div
+{
+    -webkit-backface-visibility:hidden;
+}
+.pageContainer
+{
+    display:block;
+    padding:0px 5px 0px 5px;
+    width:	1010px;
+    margin:auto;
+    cursor:default;
+    background-color:white;
+}
+.socialTable
+{
+    padding-left:58px;
+    margin-top:30px; 
+    text-align:left;
+}
+#facebook_share_td
+{
+    height:37px;
+    width:190px;
+    padding-left:48px;
+    background-repeat:no-repeat;
+}
+body[lng=en] #facebook_share_td
+{
+    background-image:url(../images-v-01/social/en/fb_icon.jpg);
+}
+body[lng=es] #facebook_share_td
+{
+    background-image:url(../images-v-01/social/es/fb_icon.jpg);
+}
+
+
+#facebook_share
+{
+    max-width:80px; 
+    width:80px;
+}
+#plus_cont_0_td
+{
+    height:37px;
+    width:190px;
+    padding-left:48px;
+    background-repeat:no-repeat;
+}
+body[lng=en] #plus_cont_0_td
+{
+    background-image:url(../images-v-01/social/en/gplus_icon.jpg);
+}
+
+#plus_cont_0
+{
+    width:80px; 
+    overflow-x:hidden;
+}
+#twitter_share_td
+{
+    height:37px;
+    width:190px;
+    padding-left:48px;
+    background-repeat:no-repeat;
+}
+body[lng=en] #twitter_share_td
+{
+    background-image:url(../images-v-01/social/en/tw_icon.jpg);
+}
+
+#twitter_share
+{
+    width:110px; 
+    overflow-x:hidden;
+}
+#pinterest_share_td
+{
+    height:37px;
+    width:120px;
+    padding-left:48px;
+    background-repeat:no-repeat;
+}
+body[lng=en] #pinterest_share_td
+{
+    background-image:url(../images-v-01/social/en/pinter_icon.jpg);
+}
+body[lng=es] #pinterest_share_td
+{
+    background-image:url(../images-v-01/social/es/pinter_icon.jpg);
+}
+body[lng=de] #pinterest_share_td
+{
+    background-image:url(../images-v-01/social/de/pinter_icon.jpg);
+}
+body[lng=fr] #pinterest_share_td
+{
+    background-image:url(../images-v-01/social/fr/pinter_icon.jpg);
+}
+body[lng=it] #pinterest_share_td
+{
+    background-image:url(../images-v-01/social/it/pinter_icon.jpg);
+}
+body[lng=pt] #pinterest_share_td
+{
+    background-image:url(../images-v-01/social/pt/pinter_icon.jpg);
+}
+body[lng=pl] #pinterest_share_td
+{
+    background-image:url(../images-v-01/social/pl/pinter_icon.jpg);
+}
+body[lng=ru] #pinterest_share_td
+{
+    background-image:url(../images-v-01/social/ru/pinter_icon.jpg);
+}
+body[lng=ja] #pinterest_share_td
+{
+    background-image:url(../images-v-01/social/en/pinter_icon.jpg);
+}
+#pinterest_share
+{
+    width:70px; 
+    overflow-x:hidden;
+}
+.footer
+{
+    width:1010px;
+    display:block;
+    margin-top:60px;
+    padding-bottom:60px;
+}
+.footerLinks
+{
+    color:Black;
+    font-size:11px;
+    margin: 0px;
+    padding: 0px;
+    list-style-type:none;
+
+    height: 13px;
+}
+.footerLinks a
+{
+    text-decoration:none;
+    padding-left:10px;
+    padding-right:10px;
+    color:Black;
+}
+.footerLinks a:hover
+{
+    text-decoration:underline;
+}
+.footerLinks li
+{
+    border-left:solid 1px Black;
+    float: left;
+}
+.footerLinks .footerLinksLeft
+{
+    border:none;
+}
+.footerText
+{
+    color:#6f6f6f;
+    font-size:11px;
+}
+.footerText p
+{
+    text-align:center;
+    margin:0px;
+}
+.footerText a
+{
+  color:#0099ff;   
+}
+
+.topTable
+{
+    height:474px;
+    width: 90%;
+    margin:auto 0px 0px auto;
+}
+.slideContainer
+{
+     -webkit-backface-visibility: hidden;
+    position:absolute;
+    left:0px;
+    top:0px;
+    width:436px;
+    height:474px;
+    display:block; 
+    background-repeat:no-repeat;
+}
+body .slideButtonBlue
+{
+    background-color:transparent;
+    border:none;
+    width:302px;
+    height:103px;
+    background-repeat:no-repeat;
+    cursor:pointer;
+    display:inline-block;
+	background-image:url(../images-v-01/start_now/hp_btn_EN.jpg);
+}
+
+
+.h1ContainerTd
+{
+    width:474px;
+}
+.slideText
+{
+    width:474px;
+    height:256px;
+    display:block;
+    padding-top:0px;
+    text-align:center;
+}
+.slideText h1
+{
+    font-family: 'HelveticaRegular';
+    color:#464646;
+    font-size:54px;
+    margin: 0px;
+    text-align:center;
+    line-height: 56px;
+    font-weight:normal;
+}
+body[lng=ja] .slideText h1
+{
+    font-family:'ＭＳ Ｐゴシック', 'Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro W3', Osaka;
+}
+.slideText h2
+{
+    color:#231f20;
+    font-size:22px;
+    margin: 0px;
+    font-weight: normal;
+    text-align:center;
+}
+.pepoleContainerTd
+{
+    width:436px;
+    height:474px;
+}
+.pepoleContainer
+{
+    height:474px;
+    width:436px;
+    position:relative;
+}
+.info_panel
+{
+    color:#252525;
+    text-align:center;
+    background-repeat:no-repeat;
+    background-position:center top;
+    display:inline-block;
+    padding-top:67px;
+    margin-bottom:12px;
+    margin-top:34px;
+}
+.info_panel h3
+{
+    font-size:22px;
+    font-family: 'HelveticaBold';
+    margin:0px;
+}
+body[lng=ja] .info_panel h3
+{
+    font-family:'ＭＳ Ｐゴシック', 'Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro W3', Osaka;
+    font-weight:bold;
+}
+.info_panel .h3Grey
+{
+    color:#535353;
+    font-size:18px;
+    font-weight:normal;
+    font-family: 'HelveticaRegular';
+    margin:0px;
+}
+body[lng=ja] .h3Grey
+{
+    font-family:'ＭＳ Ｐゴシック', 'Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro W3', Osaka;
+}
+.info_panel p
+{
+    margin:10px 0px 15px 0px;
+    color:#252525;
+    font-size:14px;
+}
+.info_panelbottomBg
+{
+    width:1000px;
+	background-position:bottom;
+    background-repeat:no-repeat;
+    margin-top:30px;
+}
+.info_panelbottomBg td
+{
+    height:1px;
+	background-color:#97EEE6;
+	opacity:0.5;
+}
+.info_panelbottomBg2
+{
+    width:100%;
+    background-image:url(../images-v-01/textBg.png);
+    background-position:center bottom;
+    background-repeat:no-repeat;
+}
+.info_panelbottomBg2 .vNoBorder
+{
+    width:33.3%;
+}
+.info_panelbottomBg2 .vBorder
+{
+    width:33.3%;
+    background-repeat:no-repeat;
+    background-position:right center;
+    background-image:url(../images-v-01/v_spliter.jpg);
+}
+.info_panelbottomBg2 .infoLast
+{
+    padding-right:0px;
+}
+.ofTheDayLinkTd
+{
+    width:380px;
+}
+.ofTheDayLink
+{
+    border:none;
+    outline:none;   
+}
+.ofTheDayLink img
+{
+    border:none;
+}
+.info_paneltopBg
+{
+    width:1010px;
+    height:1px;
+    background-image:url(../images-v-01/textBg_top.png);
+    background-position:50% 0px;
+    background-repeat:no-repeat;
+}
+.ofTheDayTextDiv
+{
+    margin-bottom:2px;
+    visibility:hidden;
+    opacity:0;
+}
+.ofTheDayLogo
+{
+    background-image:url(../images-v-01/wixlogo.jpg);
+    background-position:-44px 4px;
+    background-repeat:no-repeat;
+    padding-left:100px;
+    height:44px;
+    font-size:50px;
+    color:#231f20;
+    line-height:44px;
+}
+.ofTheDayText
+{
+    font-size:16px;
+    color:#363636;
+    margin:0px 0px 10px 0px;
+}
+.ofTheDaySlogan
+{
+    font-size:24px;
+    color:#231f20;
+}
+.ofTheDayTextDescShort
+{
+    font-size:14px;
+    color:#363636;
+}
+.ofTheDayTextDesc
+{
+    width:586px;
+    height:266px;
+    position:absolute;
+    font-size:14px;
+    color:#363636;
+    cursor:default;
+    visibility:visible;
+    opacity:1;
+    padding-top:8px;
+    margin-top:-274px;
+    overflow:hidden;
+}
+.ofTheDayTextDescText
+{
+    max-height:240px;
+    margin:0px;
+    overflow-y:hidden;
+}
+.closeDesc
+{
+    font-size:14px;
+    color:#0099ff;
+    text-decoration:underline;
+    cursor:pointer;
+    float:right;
+}
+.readOn
+{
+    font-size:14px;
+    color:#0099ff;
+    text-decoration:underline;
+    cursor:pointer;
+    margin-left:10px;
+}
+.bottomIcons
+{
+    margin:auto;
+    margin-top:30px;
+    margin-bottom:30px;
+    width:806px;
+}
+.bottomIcons td
+{
+    width:25%;
+}
+.bottomIconsText
+{
+    padding-top:0px;
+}
+.bottomIcons a
+{
+    text-decoration:none;
+    outline:none;
+    padding:0px;
+}
+.bottomIcons .iconsLinks
+{
+    border:none;
+    outline:none;
+    display:block;
+    width:197px;
+    height:151px;
+}
+.bottomIcons .iconsLinks span
+{
+    position:absolute;
+    display:block;
+    width:154px;
+    height:73px;
+    margin-top:25px;
+    margin-left:24px;
+    padding-top:30px;
+    opacity:0;
+    visibility:hidden;
+    color:White; 
+    text-decoration:none;
+    font-size:16px;
+    line-height:18px;
+    -webkit-transition:opacity 0.2s ease;
+    -moz-transition:opacity 0.2s ease;
+    -o-transition:opacity 0.2s ease;  
+}
+.bottomIcons td:hover span
+{
+    opacity:1;
+    visibility:visible;
+}
+
+.bottomIcons img
+{
+    border:none;
+    outline:none;
+}
+.vtable
+{
+    width:100%;
+    height:100%;
+    position:fixed;
+    left:0px;
+    top:0px;
+    z-index:10000;
+    opacity:0; 
+    background-color:rgba(0,0,0,0.8);
+    -webkit-transition:opacity 0.3s ease-out;
+    -moz-transition:opacity 0.3s ease-out;
+    -o-transition:opacity 0.3s ease-out;
+}
+.closeVideoButton
+{
+    position:absolute;
+    width:36px;
+    height:36px;
+    top:0px;
+    margin-top:-18px;
+    margin-left:-18px;
+    background-repeat:no-repeat;
+    background-image:url(http://static.parastorage.com/services/html-landing/html/hp-new-design/hp-resources/images-v-01/black_close_button.png);
+    cursor:pointer;
+    z-index:9100;
+}
+.homeSliderContainer
+{
+    width:1006px;
+    height:372px;
+    margin-left:2px;
+    margin-top:16px;
+}
+.homeSliderInnerContainer
+{
+    position:relative;
+    left:0px;
+    -webkit-backface-visibility:hidden;
+    -webkit-transform:translateX(0px);
+    -moz-transform:translateX(0px);
+    -o-transform:translateX(0px);
+    -webkit-transition:-webkit-transform 0.5s ease-out;
+    -moz-transition:-moz-transform 0.5s ease-out;
+    -o-transition:-o-transform 0.5s ease-out;
+    -moz-transform-origin: 0px 0px;
+    -webkit-transform-origin: 0px 0px;
+    -o-transform-origin: 0px 0px;   
+}
+.sliderSection
+{
+    -webkit-backface-visibility: hidden;
+    position:absolute;
+    width:1048px;
+    height:372px;
+}
+.sliderInnerSection
+{
+    -webkit-backface-visibility: hidden;
+    position:absolute;
+    width:1048px;
+    height:372px;
+    left:0px;
+    top:0px;
+}
+.homeSliderInnerContainer a
+{
+    position:absolute;
+    width:220px;
+    height:186px;
+    display:block;
+    border:none;
+    outline:none;
+    background-repeat:no-repeat;
+    cursor:pointer;
+    margin:0px 21px 0px 21px;
+}
+.sliderNavTable
+{
+    width:1010px;
+    text-align:center;
+    margin-top:20px;
+    margin-bottom:20px;
+}
+.sliderRd
+{
+    width:15px;
+    height:15px;
+    margin-left:3px;
+    margin-right:3px;
+    background-repeat:no-repeat;
+    background-position:0px 0px;
+    background-image:url(../images-v-01/slider_bg.jpg);
+    float:left;
+    cursor:pointer;
+}
+.sliderRd:hover
+{
+    background-position:0px -15px;
+}
+.sliderRdSelected
+{
+    width:15px;
+    height:15px;
+    margin-left:3px;
+    margin-right:3px;
+    background-repeat:no-repeat;
+    background-position:0px -30px;
+    background-image:url(../images-v-01/slider_bg.jpg);
+    float:left;
+    cursor:pointer;
+}
+
+.homeSliderTable
+{
+    margin-bottom:10px;
+}
+.homeSlider
+{    /*cubic-bezier(0, 0, 0.25, 1)*/
+    -webkit-transform:translateX(0px);
+    -moz-transform:translateY(0px);
+    -o-transform:translateY(0px);
+    -webkit-transition:-webkit-transform 0.5s ease-out;
+    -moz-transition:-moz-transform 0.5s ease-out;
+    -o-transition:-o-transform 0.5s ease-out;
+    -moz-transform-origin: 0px 0px;
+    -webkit-transform-origin: 0px 0px;
+    -o-transform-origin: 0px 0px;
+    position:relative;
+    left:0px;
+    top:0px;
+    margin-left:-20px;
+}
+.homeSlider td
+{
+    width:220px;
+    height:186px;
+}
+.homeSlider td
+{
+    width:220px;
+    height:186px;
+}
+.homeSlider .homeSliderThumb
+{
+    width:220px;
+    height:186px;
+    display:block;
+    border:none;
+    outline:none;
+    background-repeat:no-repeat;
+    cursor:pointer;
+    margin:0px 10px 0px 10px;
+}
+
+.homeSlider[vers=v1] .homeSliderThumb_0
+{
+    width:220px;
+    height:186px;
+    display:block;
+    border:none;
+    outline:none;
+    background-repeat:no-repeat;
+    cursor:pointer;
+    position:absolute;
+    z-index:1000;
+    opacity:0;
+    -webkit-transform-origin:50% 50%;
+    -webkit-transform: skewY(0deg) scale(1.0,1.0);
+    -webkit-transition:all 0.4s ease;
+    
+    -o-transform-origin:50% 100%;
+    -o-transform: scale(1.0,1.0);
+    -o-transition:all 0.3s ease;
+    
+    -moz-transform-origin:50% 100%;
+    -moz-transform: scale(1.0,1.0);
+    -moz-transition:all 0.3s ease;
+}
+.homeSlider[vers=v1] .homeSliderThumb_1
+{
+    width:220px;
+    height:186px;
+    display:block;
+    border:none;
+    outline:none;
+    background-repeat:no-repeat;
+    cursor:pointer;
+    position:absolute;
+    z-index:1000;
+    opacity:0;
+    -webkit-transform-origin:50% 50%;
+    /*-10deg*/
+    -webkit-transform: skewY(0deg) scale(1.0,1.0);
+    -webkit-transition:all 0.4s ease;
+    
+    -o-transform-origin:50% 0%;
+    -o-transform: scale(1.0,1.0);
+    -o-transition:all 0.3s ease;
+    
+    -moz-transform-origin:50% 0%;
+    -moz-transform: scale(1.0,1.0);
+    -moz-transition:all 0.3s ease;
+}
+.colllage_left{
+    width:60px;
+    height:372px;
+    cursor:pointer;
+    background-repeat:no-repeat;
+    background-image:url(../images-v-01/collageLeft.jpg);
+    background-position:left center;
+    
+}
+.colllage_left:hover{
+    background-image:url(../images-v-01/collageLeftOver.jpg);
+}
+.colllage_right{
+    width:60px;
+    height:372px;
+    cursor:pointer;
+    background-repeat:no-repeat;background-image:url(../images-v-01/collageRight.jpg);
+    background-position:right center;
+}
+.colllage_right:hover{
+    background-image:url(../images-v-01/collageRightOver.jpg);
+}
+.quick_tour
+{
+    font-size: 20px;
+    text-decoration: none;
+    margin-left: 2px;
+    margin-top: 14px;
+    color: #252525;
+    margin: auto;
+    margin-bottom: 40px;
+    margin-top: 30px;
+    text-align: center;
+}
+.quick_tour span
+{
+    font-size: 20px;
+    color: #252525;
+    text-align: center;
+}
+.quick_tour a
+{
+    padding-right: 50px;
+    background-image: url(http://static.parastorage.com/services/html-landing/html/hp-new-design/hp-resources/images-v-01/tour_button.png);
+    line-height: 28px;
+    font-family: 'HelveticaBold';
+    background-repeat: no-repeat;
+    background-position: right center;
+    display: inline-block;
+    text-decoration: none;
+    color: #252525;
+}
+body[lng=ja] .quick_tour a
+{
+    font-family:'ＭＳ Ｐゴシック', 'Hiragino Kaku Gothic Pro', 'ヒラギノ角ゴ Pro W3', Osaka;
+    font-weight:normal;
+}

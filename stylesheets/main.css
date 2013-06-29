@@ -22,6 +22,14 @@
     margin:auto;
     width:50%;
 }
+
+.center
+{
+    display:block;
+    clear:both;
+    margin:auto;
+    width:70%;
+}
 .middle
 {
     clear: both;
