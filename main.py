@@ -20,6 +20,7 @@ class Home(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
         if user:  # signed in already
+            store_current_user()
             Signout = 'Signout(<em>' + user.nickname() + '</em>)'
             nav_dic = {'Home':'active'}
             nav_list = ['Home',
@@ -39,6 +40,7 @@ class BlobStoreUpload(blobstore_handlers.BlobstoreUploadHandler):
     def post(self):
         user = users.get_current_user()
         if user:
+            store_current_user()
             blob_infos = self.get_uploads('picture') #get_uploads returns a list of BlobInfo objects
             #user may upload more than one file by one form
             for blob_info in blob_infos:
@@ -53,6 +55,7 @@ class Upload(webapp2.RequestHandler): #this upload does not deal with upload for
     def get(self):
         user = users.get_current_user()
         if user:  # signed in already
+            store_current_user()
             Signout = 'Signout(<em>' + user.nickname() + '</em>)'
             nav_dic = {'Upload':'active'}
             nav_list = ['Home','Upload','Album',Signout]
@@ -92,6 +95,7 @@ class DeleteAlbum(webapp2.RequestHandler):
     def post(self):
         user = users.get_current_user()
         if user: 
+            store_current_user()
             del_album_key = self.request.POST['album_id']
             album = Album.get(del_album_key)
             pics = Picture.all()
@@ -106,6 +110,7 @@ class DeleteAlbum(webapp2.RequestHandler):
                     pic.album = None
                     pic.put()
             album.delete()
+            coherent_check()
             time.sleep(0.5)
             self.redirect('/album') #delet a pic and after delete go to upload page
         else:
@@ -115,6 +120,7 @@ class DeletePicture(webapp2.RequestHandler):
     def post(self):
         user = users.get_current_user()
         if user: 
+            store_current_user()
             del_pickey = self.request.POST['del_pic']
             del_blob(del_pickey) # first, delete the the blob
             del_pic(del_pickey) # then, delete the picture
@@ -128,6 +134,7 @@ class GenerateAlbum(webapp2.RequestHandler):
     def post(self):
         user = users.get_current_user()
         if user:
+            store_current_user()
             post = self.request.POST
             album = Album(owner = user.user_id(), name = post['album_name'], date = datetime.datetime.now())
             album.put() # put the album into database
@@ -148,6 +155,8 @@ class AlbumList(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
         if user: 
+            debug = ''
+            store_current_user()
             Signout = 'Signout(<em>' + user.nickname() + '</em>)'
             nav_dic = {'Album':'active'}
             nav_list = ['Home',
@@ -158,13 +167,45 @@ class AlbumList(webapp2.RequestHandler):
                     'Upload': 'upload',
                     'Album':'album',
                     Signout:users.create_logout_url("/")}
-            debug = ''
             template = jinja_environment.get_template('album.html')
             album = Album.all()
             album.filter('owner =', user.user_id())
             album.order('-date')
             albums = album.run()
             cp_albums = album.run()
+
+            pub_albums = AccessOfAlbum.all()
+            pub_albums.filter ('accessibility =', 'public')
+            pub_albums = pub_albums.run()
+            re = []
+            for p in pub_albums: # now the pub_albums stores all the AccessOfAlbum objects
+                re.append(p.album)
+            pub_albums = re
+
+            pub_albums_owner = {}
+            for a in re:
+                u = User.all()
+                u.filter ('user_id =', a.owner)
+                u = u.get()
+                if u:
+                    pub_albums_owner[a.key()] = u.user_nick
+                else:
+                    pub_albums_owner[a.key()] = 'none'
+
+            show = ShowAlbumTag.all()
+            show.filter('owner =', user.user_id())
+            show = show.get()
+            show_hide_album = True
+            if show:
+                if show.show:
+                    show_hide_album = True
+                else: 
+                    show_hide_album = False
+            else:
+                show = ShowAlbumTag (owner = user.user_id(), show = True)
+                show.put()
+                show_hide_album = True
+                
             access_albums = {}
             for a in cp_albums:
                 ins = AccessOfAlbum.all()
@@ -175,12 +216,20 @@ class AlbumList(webapp2.RequestHandler):
                 else:
                     access_albums[a.name] = 'own'
 
+            if show_hide_album:
+                tag_data = 'hide'
+            else:
+                tag_data = 'show'
             var = {
                     'info': debug,
                     'nav_dic' : nav_dic,
                     'nav_list':nav_list,
                     'nav_url': nav_url,
                     'albums': albums,
+                    'show_hide_album': show_hide_album,
+                    'tag_data': tag_data,
+                    'pub_albums': pub_albums,
+                    'pub_albums_owner': pub_albums_owner,
                     'access_albums': access_albums,
                 }
             self.response.write(template.render(var))
@@ -191,6 +240,7 @@ class ShowAlbum(webapp2.RequestHandler):
     def post(self):
         user = users.get_current_user()
         if user: 
+            store_current_user()
             debug = ''
             post = self.request.POST
             album_id = post['album_id']
@@ -220,6 +270,7 @@ class AccessAlbum(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
         if user: 
+            store_current_user()
             url = self.request.url
             # last item in url is the key to the album
             album_id = (url.split('/'))[len(url.split('/')) - 1]
@@ -248,12 +299,45 @@ class AccessAlbum(webapp2.RequestHandler):
         else:
             self.redirect(self.request.host_url)
 
+class ShowPublicAlbum(webapp2.RequestHandler):
+    def get(self):
+        user = users.get_current_user()
+        if user: 
+            store_current_user()
+            sat = ShowAlbumTag.all()
+            sat.filter('owner =', user.user_id())
+            sat = sat.get()
+            if sat:
+                self.response.out.write(sat.show)
+                if sat.show:
+                    sat.show = False
+                else:
+                    sat.show = True
+                sat.put()
+            else:
+                self.response.out.write('aoa does not appear')
+                ins = ShowAlbumTag(owner=user.user_id(), show=True)
+                ins.put()
+            #self.response.out.write(url)
+            time.sleep(0.5)
+            self.redirect('/album') 
+        else:
+            self.redirect(self.request.host_url)
+
 
 # Datastore definitions
+class User(db.Model):
+    user_id = db.StringProperty()
+    user_nick = db.StringProperty()
+
 class Album(db.Model):
     owner = db.StringProperty() # identify the owner by user id
     name = db.StringProperty() # album name
     date = db.DateTimeProperty() # date of creation
+
+class ShowAlbumTag(db.Model):
+    owner = db.StringProperty()
+    show = db.BooleanProperty()
 
 class AccessOfAlbum(db.Model):
     album = db.ReferenceProperty(Album)
@@ -267,6 +351,28 @@ class Picture(db.Model):
     blob_key = blobstore.BlobReferenceProperty()
 
 # some functions
+def store_current_user():
+    user = users.get_current_user()
+    ins = User.all()
+    ins.filter('user_id =', user.user_id())
+    ins = ins.get()
+    if ins: # user has been stored
+        pass
+    else:
+        u = User(user_id = user.user_id(), user_nick = user.nickname())
+        u.put()
+
+def coherent_check():
+    #ShowAlbumTag check
+    #AccessOfAlbum check
+    ins = AccessOfAlbum.all()
+    ins = ins.run()
+    for a in ins:
+        try:
+            c = a.album
+        except: # the refered album does not exist
+            a.delete() # delete this accessofalbum object
+
 def pic_name(name): # function to restrict string to a limited length
     if len(name) > 21 :
         name = name[:18] + '...'
@@ -307,6 +413,7 @@ app = webapp2.WSGIApplication([ ('/home', Home),
                                 ('/del_pic', DeletePicture),
                                 ('/gen', GenerateAlbum),
                                 ('/show_album', ShowAlbum),
+                                ('/show_public_album', ShowPublicAlbum),
                                 ('/access_album/.*', AccessAlbum),
                                 ('/del_album', DeleteAlbum),
                                 ('/raspberry', RaspBerry),

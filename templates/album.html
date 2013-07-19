@@ -2,36 +2,60 @@
 
 {% block body %}
 
+<div class = 'row'>
 
-{% if albums %}
-{% for album in albums %}
-<div class='album-row'>
-    <p style="display:inline"> Album Name: <b>{{ album.name }}</b></p>
-    <a href="access_album/{{ album.key() }}"><p style="display:inline; position: relative; left: 20%"> Access: {{ access_albums[album.name] }} </p></a>
-    <form action="show_album" method="POST" style='display:inline'>
-        <input class='disappear' name='album_id' value="{{ album.key() }}" />
-        <input style="display:block; float:right" type='submit' value='  View ' /> 
-    </form>
-    <div class='row middle'>
-        <form action="del_album" method="POST" style='display:inline; float:right'>
-            <input class='disappear' name='album_id' value="{{ album.key() }}" />
-            <input class='disappear' name='album_id_without_pics' />
-            <input type='submit' value='Delete without delete pictures' />
-        </form>
-        <form action="del_album" method="POST" style='display:inline; float:right'>
-            <input class='disappear' name='album_id' value="{{ album.key() }}" />
-            <input class='disappear' name='album_id_with_pics'  />
-            <input type='submit' class='del-with-pics' value='Delete and delete pictures' />
-        </form>
+    {% if pub_albums %}
+    <div class='album-row'>
+        <p class='lead'><b>List of <em>Public</em> Albums: <a href="show_public_album">({{ tag_data }})</a></b></p>
     </div>
+        {% if show_hide_album %}
+            {% for pub_album in pub_albums %}
+            <div class='album-row'>
+                <p style="display:inline"> Album Name: <b>{{ pub_album.name }}({{ pub_albums_owner[pub_album.key()] }})</b></p>
+                <form action="show_album" method="POST" style='display:inline'>
+                    <input class='disappear' name='album_id' value="{{ pub_album.key() }}" />
+                    <input style="display:inline; float:right" type='submit' value='  View ' /> 
+                </form>
+            <hr/>
+            </div>
+            {% endfor %}
+        {% endif %}
+    {% endif %}
 
-    <hr />
-</div>
-{% endfor %}
-{% else %}
-<div>
-    <p>There is no created album</p>
-</div>
-{% endif %}
+    {% if albums %}
+    <div class='album-row'>
+        <p class='lead'><b>List of <em>Own</em> Albums:</b></p>
+    </div>
+ 
+    {% for album in albums %}
+    <div class='album-row'>
+        <p style="display:inline"> Album Name: <b>{{ album.name }}</b></p>
+        <a href="access_album/{{ album.key() }}"><p style="display:inline; position: relative; left: 20%"> Access: {{ access_albums[album.name] }} </p></a>
+        <form action="show_album" method="POST" style='display:inline'>
+            <input class='disappear' name='album_id' value="{{ album.key() }}" />
+            <input style="display:block; float:right" type='submit' value='  View ' /> 
+        </form>
+        <div class='row middle'>
+            <form action="del_album" method="POST" style='display:inline; float:right'>
+                <input class='disappear' name='album_id' value="{{ album.key() }}" />
+                <input class='disappear' name='album_id_without_pics' />
+                <input type='submit' value='Delete without delete the pictures' />
+            </form>
+            <form action="del_album" method="POST" style='display:inline; float:right'>
+                <input class='disappear' name='album_id' value="{{ album.key() }}" />
+                <input class='disappear' name='album_id_with_pics'  />
+                <input type='submit' class='del-with-pics' value='Delete and delete the pictures' />
+            </form>
+        </div>
 
+        <hr />
+    </div>
+    {% endfor %}
+    {% else %}
+    <div>
+        <p>There is no created album</p>
+    </div>
+    {% endif %}
+
+</div>
 {% endblock %}
