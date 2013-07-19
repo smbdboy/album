@@ -2,10 +2,12 @@
 
 {% block body %}
 
+
 {% if albums %}
 {% for album in albums %}
 <div class='album-row'>
     <p style="display:inline"> Album Name: <b>{{ album.name }}</b></p>
+    <a href="access_album/{{ album.key() }}"><p style="display:inline; position: relative; left: 20%"> Access: {{ access_albums[album.name] }} </p></a>
     <form action="show_album" method="POST" style='display:inline'>
         <input class='disappear' name='album_id' value="{{ album.key() }}" />
         <input style="display:block; float:right" type='submit' value='  View ' /> 
@@ -22,6 +24,7 @@
             <input type='submit' class='del-with-pics' value='Delete and delete pictures' />
         </form>
     </div>
+
     <hr />
 </div>
 {% endfor %}

@@ -164,12 +164,24 @@ class AlbumList(webapp2.RequestHandler):
             album.filter('owner =', user.user_id())
             album.order('-date')
             albums = album.run()
+            cp_albums = album.run()
+            access_albums = {}
+            for a in cp_albums:
+                ins = AccessOfAlbum.all()
+                ins.filter('album =', a)
+                ins = ins.get()
+                if ins:
+                    access_albums[a.name] = ins.accessibility
+                else:
+                    access_albums[a.name] = 'own'
+
             var = {
                     'info': debug,
                     'nav_dic' : nav_dic,
                     'nav_list':nav_list,
                     'nav_url': nav_url,
                     'albums': albums,
+                    'access_albums': access_albums,
                 }
             self.response.write(template.render(var))
         else:
@@ -179,6 +191,7 @@ class ShowAlbum(webapp2.RequestHandler):
     def post(self):
         user = users.get_current_user()
         if user: 
+            debug = ''
             post = self.request.POST
             album_id = post['album_id']
             album = Album.get(album_id)
@@ -192,7 +205,6 @@ class ShowAlbum(webapp2.RequestHandler):
                 url = images.get_serving_url(pic.blob_key)
                 pic_urls.append(url)
                 pic_names[url] = pic.blob_key.filename
-            debug = ''
             var = {
                     'info': debug,
                     'pic_urls': pic_urls,
@@ -204,11 +216,48 @@ class ShowAlbum(webapp2.RequestHandler):
         else:
             self.redirect(self.request.host_url)
 
+class AccessAlbum(webapp2.RequestHandler):
+    def get(self):
+        user = users.get_current_user()
+        if user: 
+            url = self.request.url
+            # last item in url is the key to the album
+            album_id = (url.split('/'))[len(url.split('/')) - 1]
+            album = Album.get(album_id)
+            AOA = AccessOfAlbum.all()
+            AOA.filter('album =', album)
+            AOA = AOA.run()
+            re = ''
+            for a in AOA:
+                re = a
+            AOA = re
+            if AOA:
+                self.response.out.write(AOA.accessibility)
+                if AOA.accessibility == 'public':
+                    AOA.accessibility = 'own'
+                else:
+                    AOA.accessibility = 'public'
+                AOA.put()
+            else:
+                self.response.out.write('aoa does not appear')
+                ins = AccessOfAlbum(album=album, accessibility = 'public')
+                ins.put()
+            #self.response.out.write(url)
+            time.sleep(0.5)
+            self.redirect('/album') 
+        else:
+            self.redirect(self.request.host_url)
+
+
 # Datastore definitions
 class Album(db.Model):
     owner = db.StringProperty() # identify the owner by user id
     name = db.StringProperty() # album name
     date = db.DateTimeProperty() # date of creation
+
+class AccessOfAlbum(db.Model):
+    album = db.ReferenceProperty(Album)
+    accessibility = db.StringProperty()
 
 class Picture(db.Model):
     owner = db.StringProperty() # identify the owner by user id
@@ -258,6 +307,7 @@ app = webapp2.WSGIApplication([ ('/home', Home),
                                 ('/del_pic', DeletePicture),
                                 ('/gen', GenerateAlbum),
                                 ('/show_album', ShowAlbum),
+                                ('/access_album/.*', AccessAlbum),
                                 ('/del_album', DeleteAlbum),
                                 ('/raspberry', RaspBerry),
                                 ('/album', AlbumList)],
